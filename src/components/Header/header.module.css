@@ -1,0 +1,34 @@
+.header {
+    width: 100%;
+    
+}
+
+.aboveNav{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+}
+
+.logoInformation {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    background-image: url("../../../public/logo.png");
+    width: 40px;
+    height: 53px;
+    background-size: 100% 100%;
+    margin-right: 20px;
+}
+
+.logoName {
+    font-size: 26px;
+}
+
+.notification{
+    width: 27px;
+    height: 33px;
+}
