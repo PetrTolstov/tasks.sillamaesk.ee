@@ -1,0 +1,26 @@
+.table {
+    margin-top: 10px;
+}
+
+.headerOfTable {
+    display: flex;
+    justify-content: space-between;
+    background-color: #ececec;
+    padding: 5px 15px;
+    border-radius: 5px 5px 0 0;
+}
+
+.headerOfTable h2 {
+    all: unset;
+    font-weight: 700;
+    font-size: 14px;
+
+    color: #002b5c;
+}
+
+.notification{
+    height: 15px;
+    width: 15px;
+    border-radius: 20px;
+    background-color: #EB0000;
+}

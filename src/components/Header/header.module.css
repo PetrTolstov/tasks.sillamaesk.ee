@@ -1,6 +1,6 @@
 .header {
     width: 100%;
-    
+    margin-bottom: 10px;
 }
 
 .aboveNav{
@@ -29,6 +29,28 @@
 }
 
 .notification{
-    width: 27px;
-    height: 33px;
+    margin-left: 20px;
+    width: 20px;
+    height: 24px;
+}
+
+.div{
+    display: flex;
+
+}
+
+.nav{
+    width: 100%;
+    border-top: 1px #CACACA solid;
+    padding: 10px 0;
+
+}
+
+.link{
+    all: unset;
+    padding: 10px 30px;
+}
+
+.primaryLink{
+    border-top: 2px #0167FF solid;
 }

@@ -1,0 +1,33 @@
+.item {
+    display: flex;
+    flex-direction: row;
+    padding: 10px 15px;
+    font-weight: 500;
+    font-size: 14px;
+    background-color: #E3FFD6;
+    color: #002b5c;
+}
+
+
+.title {
+    display: flex;
+    flex-basis: 20%;
+}
+
+.description {
+    display: flex;
+    justify-content: center;
+    flex-basis: 50%;
+}
+
+.date {
+    display: flex;
+    justify-content: center;
+    flex-basis: 15%;
+}
+
+.isDone {
+    display: flex;
+    justify-content: flex-end;
+    flex-basis: 15%;
+}

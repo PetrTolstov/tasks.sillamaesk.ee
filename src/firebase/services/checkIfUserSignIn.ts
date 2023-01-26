@@ -1,6 +1,6 @@
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebaseInit";
-import { collection, doc, getDoc } from "firebase/firestore/lite";
+import { doc, getDoc } from "firebase/firestore/lite";
 import { UserType } from "../../types/UserType";
 import UserStore from "../../stores/UserStore";
 
@@ -21,6 +21,7 @@ export default function CheckIfUserSignIn() {
           
             
         } else {
+            localStorage.setItem("isLoggedIn", '')
             // User is signed out
             // ...
         }
