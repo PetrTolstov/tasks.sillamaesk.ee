@@ -1,10 +1,13 @@
-import { FormEvent, useState } from "react";
-import styles from "./RegistrationForm.module.css";
+import { useState } from "react";
 import Modal from "../Modal/Modal";
 import TextInput from "../TextInput/TextInput";
 import Button, { Size } from "../Button/Button";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase/firebaseInit";
+import {
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+} from "firebase/auth";
+import { auth, db } from "../../firebase/firebaseInit";
+import { setDoc, doc } from "firebase/firestore/lite";
 
 type RegistrationFormProps = {
     isShowingModal: boolean;
@@ -27,21 +30,45 @@ function RegistrationForm({
     const [lastName, setLastName] = useState("");
     const [personalCode, setPesonalCode] = useState("");
     const [number, setNumber] = useState("");
+    const [role, setRole] = useState("user");
 
+    function register() {
+        createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                setDoc(doc(db, "users", email), {
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email,
+                    number: number,
+                    personalCode: personalCode,
+                    active: false,
+                    role: role,
+                    tasks: [],
+                    teams: [],
+                });
+            })
+            .then(() => {
+                localStorage.setItem("isLoggedIn", "1");
+                closeModal();
+            })
+            .catch((error) => {
+                const errorMessage = error.message;
+                console.log(errorMessage);
+            });
+    }
 
-    function login(){
+    function login() {
         signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => { 
-            localStorage.setItem("isLoggedIn", '1')
-            closeModal()            
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.log(errorMessage)
-        });
-    } 
-
+            .then((userCredential) => {
+                localStorage.setItem("isLoggedIn", "1");
+                closeModal();
+                window.location.reload();
+            })
+            .catch((error) => {
+                const errorMessage = error.message;
+                console.log(errorMessage);
+            });
+    }
 
     return (
         <Modal isShowing={isShowingModal} closeModal={closeModal}>
@@ -58,11 +85,7 @@ function RegistrationForm({
                         isSecure
                         onChange={(i) => setPassword(i)}
                     />
-                    <Button
-                        action={() =>  login()}
-                        size={Size.Medium}
-                        filled
-                    >
+                    <Button action={() => login()} size={Size.Medium} filled>
                         Login
                     </Button>
                     <Button
@@ -105,11 +128,19 @@ function RegistrationForm({
                         onChange={(i) => setPassword(i)}
                     />
 
-                    <Button
-                        action={() => console.log(email)}
-                        size={Size.Medium}
-                        filled
+                    <select
+                        name="role"
+                        onChange={(e) => setRole(e.currentTarget.value)}
                     >
+                        <option value={"user"} key={1}>
+                            Worker
+                        </option>
+                        <option value={"admin"} key={2}>
+                            Administrator
+                        </option>
+                    </select>
+
+                    <Button action={() => register()} size={Size.Medium} filled>
                         Register
                     </Button>
                     <Button

@@ -2,6 +2,13 @@
     margin-top: 10px;
 }
 
+.select{
+    width: 100px;
+    border-radius: 10px;
+    padding: 8px;
+
+}
+
 .headerOfTable {
     display: flex;
     justify-content: space-between;

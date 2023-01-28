@@ -5,9 +5,11 @@ import RegistrationForm from "../RegistrationForm/RegistrationForm";
 import styles from "./header.module.css";
 import LogOut from "../../firebase/services/LogOut";
 import { observer } from 'mobx-react-lite';
+import { useLocation } from "react-router-dom";
 
 function Header() {
     const [isShowing, setIsShowing] = useState(false);
+    const path = useLocation().pathname
     return (
         <header className={styles.header}>
             <div className={styles.aboveNav}>
@@ -47,16 +49,16 @@ function Header() {
                     </>
                 )}
             </div>
-            {UserStore.userData.user?.role == "admin" ||
-            UserStore.userData.user?.role == "manager" ? (
+            {UserStore.userData.user?.role === "admin" ||
+            UserStore.userData.user?.role === "manager" ? (
                 <nav className={styles.nav}>
                     <a
                         href={"/"}
-                        className={[styles.link, styles.primaryLink].join(" ")}
+                        className={[styles.link, (path === '/Workers') ? '' : styles.primaryLink ].join(" ")}
                     >
                         Ülesanded
                     </a>
-                    <a href={"/Workers"} className={styles.link}>
+                    <a href={"/Workers"} className={[styles.link, (path === '/Workers') ? styles.primaryLink : '' ].join(" ")}>
                         Töötajad
                     </a>
                 </nav>

@@ -1,9 +1,3 @@
-import { useEffect, useState } from "react";
-import getTasks from "../firebase/services/getTasks";
-import { DocumentData } from "firebase/firestore/lite";
-import Button from "../components/Button/Button";
-import RegistrationForm from "../components/RegistrationForm/RegistrationForm";
-import UserStore from "../stores/UserStore";
 import styles from "./Main.module.css";
 import Table from "../components/Table/Table";
 

@@ -12,9 +12,17 @@
     z-index: 20;
     border-radius: 5px;
     padding: 20px 50px;
-    padding-bottom: 100px;
+    
     overflow-y: scroll;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none; 
 }
+
+.modal::-webkit-scrollbar {
+    display: none;
+  }
+  
+ 
 
 .shadow {
     top: 0;

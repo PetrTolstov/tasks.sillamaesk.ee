@@ -1,0 +1,22 @@
+
+
+.container { 
+    display: flex;
+    flex-direction: column;
+    margin: 10px 0;
+}
+
+
+.container > label { 
+    align-self: flex-start;
+    margin-bottom: 5px;
+}
+.container > input { 
+    all: unset;
+
+    text-align: left;
+    padding: 10px 15px;
+    font-size: 15px;
+    border-radius: 20px; 
+    border: 0.1px solid black;
+}
