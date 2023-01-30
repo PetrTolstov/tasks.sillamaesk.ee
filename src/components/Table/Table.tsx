@@ -4,62 +4,54 @@ import styles from "./table.module.css";
 import TableItem from "../TableItem/TableItem";
 import { observer } from "mobx-react-lite";
 import getUsers from "../../firebase/services/getUsers";
-import { UserType } from "../../types/UserType";
+import { UserType, User } from "../../types/UserType";
 import Button from "../Button/Button";
 import AddingTask from "../AddingTask/AddingTask";
+import { Team, TeamType } from "../../types/TeamType";
+import getTeams from "../../firebase/services/getTeams";
+import Options from "../Options/Options";
 
-function Table() {
-    const [users, setUsers] = useState<UserType[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [currentUser, setCurrentUser] = useState<UserType | null>(null);
+export enum TableFor {
+    Users,
+    Teams,
+    All,
+}
+
+type TableProps = {
+    target: User | Team | null;
+    list: User[] | Team[];
+    setCurrentTarget: (newTarget: string) => void;
+};
+
+function Table({ target, list, setCurrentTarget }: TableProps) {
     const [isShowing, setIsShowing] = useState(false);
-
-    function setCurrentUserByCode(code: string) {
-        const result = users.filter((obj) => {
-            return obj.personalCode === code;
-        });
-
-        if (result && result[0]) {
-            setCurrentUser(result[0]);
-        }
-    }
+    const [users, setUsers] = useState<User[]>([]);
+    const [teams, setTeams] = useState<Team[]>([]);
 
     useEffect(() => {
-        if (
-            UserStore.userData.user?.role === "admin" ||
-            UserStore.userData.user?.role === "manager"
-        ) {
-            getUsers("user").then((res) => {
-                setUsers(res);
-                setCurrentUser(res.at(0) as UserType);
-                console.log(res);
-                setIsLoading(false);
-            });
-        } else {
-            setCurrentUser(UserStore.userData.user);
+        if (target instanceof User) {
+            setUsers(list as User[]);
+        } else if (target instanceof Team) {
+            setTeams(list as Team[]);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [UserStore.userData.user]);
+    }, []);
 
     return (
         <article className={styles.table}>
             <div className={styles.headerOfTable}>
                 <h2>Isiklikud ülesanded</h2>
 
-                {!isLoading ? (
+                {UserStore.userData.user?.role === "manager" ||
+                UserStore.userData.user?.role === "admin" ? (
                     <>
                         <select
                             className={styles.select}
-                            name="users"
+                            name="list"
                             onChange={(e) =>
-                                setCurrentUserByCode(e.currentTarget.value)
+                                setCurrentTarget(e.currentTarget.value)
                             }
                         >
-                            {users.map((user) => (
-                                <option value={user.personalCode} key={user.email}>
-                                    {user.firstName} {user.lastName}
-                                </option>
-                            ))}
+                            <Options users={users} teams={teams} />
                         </select>
                         {UserStore.userData.user?.role === "manager" ? (
                             <>
@@ -68,6 +60,7 @@ function Table() {
                                 </Button>
                                 <AddingTask
                                     users={users}
+                                    teams={teams}
                                     isShowingModal={isShowing}
                                     closeModal={() => setIsShowing(false)}
                                 />
@@ -83,13 +76,15 @@ function Table() {
                 <span className={styles.notification}></span>
             </div>
 
-            {currentUser ? (
-                currentUser.tasks.map((el) => (
-                    <TableItem id={el} key={el} user={currentUser} />
+            {target ? (
+                target.tasks.map((el) => (
+                    <TableItem id={el} key={el} target={target} />
                 ))
             ) : (
                 <></>
             )}
+
+            
         </article>
     );
 }

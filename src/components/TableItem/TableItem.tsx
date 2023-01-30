@@ -5,11 +5,13 @@ import UserStore from "../../stores/UserStore";
 import styles from "./tableitem.module.css";
 import { TaskType } from "../../types/TaskType";
 import { db } from "../../firebase/firebaseInit";
-import { UserType } from "../../types/UserType";
+import { User, UserType } from "../../types/UserType";
+import { observer } from 'mobx-react-lite';
+import { Team } from "../../types/TeamType";
 
-type TableProps = {
+type TableItemProps = {
     id: string;
-    user: UserType;
+    target: User | Team;
 };
 
 enum Status {
@@ -17,24 +19,37 @@ enum Status {
     Checked,
 }
 
-export default function TableItem({ id, user }: TableProps) {
+function TableItem({ id, target }: TableItemProps) {
     const [task, setTask] = useState<TaskType | null>(null);
     useEffect(() => {
         (async () => {
             getTasks(id.split(" ").join("")).then((res) => {
                 setTask(res);
+                
                 if (!res) {
-                    const userRef = doc(db, "users", user.email);
-                    let list = user?.tasks.filter((value) => {
-                        return value !== id;
-                    });
-                    updateDoc(userRef, {
-                        tasks: list,
-                    });
+                    if(target instanceof User){
+                        const userRef = doc(db, "users", target.email);
+                        let list = target?.tasks.filter((value) => {
+                            return value !== id;
+                        });
+                        updateDoc(userRef, {
+                            tasks: list,
+                        });
+                    } else if(target instanceof Team){
+                        const userRef = doc(db, "teams", target.id);
+                        let list = target?.tasks.filter((value) => {
+                            return value !== id;
+                        });
+                        updateDoc(userRef, {
+                            tasks: list,
+                        });
+                    }
+                    
                 }
+                
             });
         })();
-    }, [id, user.email, user?.tasks]);
+    }, [id, target?.tasks]);
 
     function changeStatus(value: boolean, status: Status) {
         const taskRef = doc(db, "tasks", id);
@@ -142,3 +157,5 @@ export default function TableItem({ id, user }: TableProps) {
         </>
     );
 }
+
+export default observer(TableItem)

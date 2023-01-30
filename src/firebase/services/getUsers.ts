@@ -1,5 +1,5 @@
 import { collection, getDocs, query, where } from "firebase/firestore/lite";
-import { UserType } from "../../types/UserType";
+import { User, UserType } from "../../types/UserType";
 import { db } from "../firebaseInit";
 
 export default async function getUsers(role: string) {
@@ -8,7 +8,23 @@ export default async function getUsers(role: string) {
     const querySnapshot = await getDocs(q);
     let list: UserType[] = [];
     querySnapshot.forEach((doc) => {
-        list.push(doc.data() as UserType);
+        let obj = doc.data() as User;
+        obj.id = obj.email;
+
+        list.push(
+            new User(
+                obj.id,
+                obj.firstName,
+                obj.lastName,
+                obj.personalCode,
+                obj.email,
+                obj.number,
+                obj.teams,
+                obj.tasks,
+                obj.active,
+                obj.role
+            )
+        );
     });
 
     return list;

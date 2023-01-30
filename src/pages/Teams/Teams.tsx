@@ -1,26 +1,23 @@
-import styles from "./Main.module.css";
-import Table, { TableFor } from "../components/Table/Table";
-import { useState, useEffect } from "react";
-import getTeams from "../firebase/services/getTeams";
-import getUsers from "../firebase/services/getUsers";
-import UserStore from "../stores/UserStore";
-import { TeamType, Team } from '../types/TeamType';
-import { User, UserType } from "../types/UserType";
 import { observer } from "mobx-react-lite";
+import { useState, useEffect } from "react";
+import Table from "../../components/Table/Table";
+import getTeams from "../../firebase/services/getTeams";
+import UserStore from "../../stores/UserStore";
+import { Team, TeamType } from "../../types/TeamType";
+import styles from "./teams.module.css"
 
-function Main() {
-    const [users, setUsers] = useState<User[]>([]);
+function Teams() {
+    const [teams, setTeams] = useState<Team[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [currentUser, setCurrentUser] = useState<User | null>(null);
-
+    const [currentTeam, setCurrentTeam] = useState<Team | null>(null);
 
     function setCurrentUserByCode(code: string) {
-        const result = users.filter((obj) => {
-            return obj.personalCode === code;
+        const result = teams.filter((obj) => {
+            return obj.id === code;
         });
 
         if (result && result[0]) {
-            setCurrentUser(result[0]);
+            setCurrentTeam(result[0]);
         }
     }
 
@@ -30,13 +27,13 @@ function Main() {
                 UserStore.userData.user?.role === "admin" ||
                 UserStore.userData.user?.role === "manager"
             ) {
-                getUsers("user").then((res) => {
-                    setUsers(res);
-                    setCurrentUser(res.at(0) as User);
+                getTeams().then((res) => {
+                    setTeams(res);
+                    setCurrentTeam(res.at(0) as TeamType);
                     setIsLoading(false);
                 });
             } else {
-                setCurrentUser(UserStore.userData.user);
+                //setCurrentUser(UserStore.userData.user);
                 setIsLoading(false)
             }
         }
@@ -48,11 +45,11 @@ function Main() {
             <nav className={styles.nav}>
                 <a
                     href={"/"}
-                    className={[styles.link, styles.primaryLink].join(" ")}
+                    className={styles.link}
                 >
                     Tööline
                 </a>
-                <a href={"/Teams"} className={styles.link}>
+                <a href={"/Teams"} className={[styles.link, styles.primaryLink].join(" ")}>
                     Käsk
                 </a>
                 <a href={"/ForAll"} className={styles.link}>
@@ -61,7 +58,7 @@ function Main() {
             </nav>
 
             {!isLoading ? (
-                <Table target={currentUser} setCurrentTarget={(newTarget : string) => setCurrentUserByCode(newTarget)} list={users} />
+                <Table target={currentTeam} setCurrentTarget={(newTarget : string) => setCurrentUserByCode(newTarget)} list={teams} />
             ) : (
                 <p>Loading...</p>
             )}
@@ -69,4 +66,5 @@ function Main() {
     );
 }
 
-export default observer(Main);
+
+export default observer(Teams);

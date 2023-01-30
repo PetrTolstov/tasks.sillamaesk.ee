@@ -4,26 +4,43 @@ import Modal from "../Modal/Modal";
 import TextInput from "../TextInput/TextInput";
 import Button, { Size } from "../Button/Button";
 import DateInput from "../DateInput/DateInput";
-import { UserType } from "../../types/UserType";
+import { UserType, User } from "../../types/UserType";
 import { addDoc, collection, doc, updateDoc } from "firebase/firestore/lite";
 import { db } from "../../firebase/firebaseInit";
+import { Team } from "../../types/TeamType";
+import Options from "../Options/Options";
+
 
 type AddingTaskProps = {
-    users: UserType[];
+    users: User[];
+    teams: Team[];
     isShowingModal: boolean;
     closeModal: () => void;
 };
 
-function AddingTask({ users, isShowingModal, closeModal }: AddingTaskProps) {
-    const [currentUser, setCurrentUser] = useState<UserType | null>(null);
+function AddingTask({
+    users,
+    teams,
+    isShowingModal,
+    closeModal,
+}: AddingTaskProps) {
+    const [currentTarget, setCurrentTarget] = useState<User | Team | null>(
+        null
+    );
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
 
     useEffect(() => {
-        setCurrentUser(users.at(0) as UserType);
-    }, [users]);
+        if (users) {
+            setCurrentTarget(users.at(0) as User);
+        } else if (teams) {
+            setCurrentTarget(teams.at(0) as Team);
+        } else {
+            //foreveryone
+        }
+    }, [users, teams]);
 
     function createTask() {
         addDoc(collection(db, "tasks"), {
@@ -34,23 +51,46 @@ function AddingTask({ users, isShowingModal, closeModal }: AddingTaskProps) {
             startDate: startDate,
             title: title,
         }).then((docRef) => {
-            const userRef = doc(db, "users", currentUser!.email);
-            currentUser?.tasks.push(docRef.id);
-            updateDoc(userRef, {
-                tasks: currentUser!.tasks,
-            });
-            closeModal();
-            window.location.reload();
+            console.log(currentTarget instanceof User);
+            if (currentTarget instanceof User) {
+                const userRef = doc(db, "users", currentTarget!.email);
+                currentTarget?.tasks.push(docRef.id);
+                updateDoc(userRef, {
+                    tasks: currentTarget!.tasks,
+                });
+                closeModal();
+                window.location.reload();
+            } else if (currentTarget instanceof Team) {
+                const userRef = doc(db, "teams", currentTarget!.id);
+                currentTarget?.tasks.push(docRef.id);
+                updateDoc(userRef, {
+                    tasks: currentTarget!.tasks,
+                });
+                closeModal();
+                window.location.reload();
+            } else {
+                //foreveryone
+            }
         });
     }
 
-    function setCurrentUserByCode(code: string) {
-        const result = users.filter((obj) => {
-            return obj.personalCode === code;
-        });
+    function setCurrentTargetByCode(code: string) {
+        let result: User[] | Team[] | null;
+        if (users) {
+            result = users.filter((obj) => {
+                return obj.personalCode === code;
+            });
+        } else if (teams) {
+            result = teams.filter((obj) => {
+                return obj.id === code;
+            });
+        } else {
+            //foreveryone
+            result = null;
+        }
 
         if (result && result[0]) {
-            setCurrentUser(result[0]);
+            setCurrentTarget(result[0]);
         }
     }
 
@@ -58,14 +98,10 @@ function AddingTask({ users, isShowingModal, closeModal }: AddingTaskProps) {
         <Modal isShowing={isShowingModal} closeModal={closeModal}>
             <select
                 className={styles.select}
-                name="users"
-                onChange={(e) => setCurrentUserByCode(e.currentTarget.value)}
+                name="list"
+                onChange={(e) => setCurrentTargetByCode(e.currentTarget.value)}
             >
-                {users.map((user) => (
-                    <option value={user.personalCode} key={user.email}>
-                        {user.firstName} {user.lastName}
-                    </option>
-                ))}
+                <Options users={users} teams={teams} />
             </select>
             <TextInput
                 placeholder={"Title"}
