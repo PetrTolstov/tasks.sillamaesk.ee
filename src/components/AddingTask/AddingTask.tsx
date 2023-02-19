@@ -42,34 +42,46 @@ function AddingTask({
     }, [users, teams]);
 
     function createTask() {
-        addDoc(collection(db, "tasks"), {
-            checked: false,
-            description: description,
-            done: false,
-            endDate: endDate,
-            startDate: startDate,
-            title: title,
-        }).then((docRef) => {
-            if (currentTarget instanceof User) {
-                const userRef = doc(db, "users", currentTarget!.email);
-                currentTarget?.tasks.push(docRef.id);
-                updateDoc(userRef, {
-                    tasks: currentTarget!.tasks,
-                });
+        if (users.at(0) || teams.at(0)) {
+            addDoc(collection(db, "tasks"), {
+                checked: false,
+                description: description,
+                done: false,
+                endDate: endDate,
+                startDate: startDate,
+                title: title,
+            }).then((docRef) => {
+                if (currentTarget instanceof User) {
+                    const userRef = doc(db, "users", currentTarget!.email);
+                    currentTarget?.tasks.push(docRef.id);
+                    updateDoc(userRef, {
+                        tasks: currentTarget!.tasks,
+                    });
+                    closeModal();
+                    window.location.reload();
+                } else if (currentTarget instanceof Team) {
+                    const userRef = doc(db, "teams", currentTarget!.id);
+                    currentTarget?.tasks.push(docRef.id);
+                    updateDoc(userRef, {
+                        tasks: currentTarget!.tasks,
+                    });
+                    closeModal();
+                    window.location.reload();
+                } else {
+                    //foreveryone
+                }
+            });
+        } else {
+            addDoc(collection(db, "notifications"), {
+                description: description,
+                endDate: endDate,
+                startDate: startDate,
+                title: title,
+            }).then((docRef) => {
                 closeModal();
                 window.location.reload();
-            } else if (currentTarget instanceof Team) {
-                const userRef = doc(db, "teams", currentTarget!.id);
-                currentTarget?.tasks.push(docRef.id);
-                updateDoc(userRef, {
-                    tasks: currentTarget!.tasks,
-                });
-                closeModal();
-                window.location.reload();
-            } else {
-                //foreveryone
-            }
-        });
+            });
+        }
     }
 
     function setCurrentTargetByCode(code: string) {
@@ -95,15 +107,19 @@ function AddingTask({
     return (
         <Modal isShowing={isShowingModal} closeModal={closeModal}>
             <div>
-                <select
-                    className={styles.select}
-                    name="list"
-                    onChange={(e) =>
-                        setCurrentTargetByCode(e.currentTarget.value)
-                    }
-                >
-                    <Options users={users} teams={teams} />
-                </select>
+                {users.at(0) || teams.at(0) ? (
+                    <select
+                        className={styles.select}
+                        name="list"
+                        onChange={(e) =>
+                            setCurrentTargetByCode(e.currentTarget.value)
+                        }
+                    >
+                        <Options users={users} teams={teams} />
+                    </select>
+                ) : (
+                    <></>
+                )}
                 <TextInput
                     placeholder={"Title"}
                     value={title}
@@ -127,7 +143,11 @@ function AddingTask({
             </div>
 
             <Button action={() => createTask()} size={Size.Medium} filled>
-                Create Task
+                {users.at(0) || teams.at(0) ? (
+                    <>Create Task</>
+                ) : (
+                    <>Create Notification</>
+                )}
             </Button>
         </Modal>
     );

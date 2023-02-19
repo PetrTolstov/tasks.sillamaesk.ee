@@ -3,7 +3,7 @@ import { Notification } from "../../types/NotificationType";
 import { Team } from "../../types/TeamType";
 import { db } from "../firebaseInit";
 
-export default async function getTeams() {
+export default async function getNotifications() {
     const querySnapshot = await getDocs(collection(db, "notifications"));
     let list: Notification[] = [];
 

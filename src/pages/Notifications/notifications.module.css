@@ -9,6 +9,7 @@
 
 .link {
     all: unset;
+    cursor: pointer;
     padding: 5px 10px;
     font-weight: 600;
     font-size: 16px;

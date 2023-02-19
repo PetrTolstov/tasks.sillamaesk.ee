@@ -6,11 +6,14 @@ import { observer } from "mobx-react-lite";
 
 import { Notification } from "../../types/NotificationType";
 import getNotifications from "../../firebase/services/getNotifications";
+import UserStore from "../../stores/UserStore";
+import AddingTask from "../AddingTask/AddingTask";
+import Button from "../Button/Button";
 
 
 function NotificationTable() {
     const [notifications, setNotifications] = useState<Notification[]>([]);
-   
+    const [isShowing, setIsShowing] = useState(false);
 
 
     useEffect(() => {
@@ -23,7 +26,21 @@ function NotificationTable() {
         <article className={styles.table}>
             <div className={styles.headerOfTable}>
                 <h2>Isiklikud ülesanded</h2>
-
+                {UserStore.userData.user?.role === "manager" ? (
+                            <>
+                                <Button action={() => setIsShowing(true)}>
+                                    +
+                                </Button>
+                                <AddingTask
+                                    users={[]}
+                                    teams={[]}
+                                    isShowingModal={isShowing}
+                                    closeModal={() => setIsShowing(false)}
+                                />
+                            </>
+                        ) : (
+                            <></>
+                        )}
                 <span className={styles.notification}></span>
             </div>
 
