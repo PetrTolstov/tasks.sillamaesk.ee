@@ -55,7 +55,11 @@ function TableItem({ id, target }: TableItemProps) {
         const taskRef = doc(db, "tasks", id);
 
         if (status === Status.Checked) {
-            deleteDoc(doc(db, "tasks", id));
+            deleteDoc(doc(db, "tasks", id)).then((res) => {
+                console.log(res)
+            }).catch((e) => {
+                console.log(e)
+            });
         } else if (status === Status.Done) {
             updateDoc(taskRef, {
                 done: value,

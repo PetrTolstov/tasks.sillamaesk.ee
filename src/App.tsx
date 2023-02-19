@@ -5,6 +5,7 @@ import Main from "./pages/Main";
 import CheckIfUserSignIn from './firebase/services/checkIfUserSignIn';
 import Workers from "./pages/Workers/Workers";
 import Teams from "./pages/Teams/Teams";
+import Notifications from "./pages/Notifications/Notifications";
 
 function App() {
 
@@ -18,7 +19,7 @@ function App() {
                 <Route path="/" element={<Layout />}>
                     <Route index element={<Main />} />
                     <Route path={"/Teams"} element={<Teams />} />
-                    <Route path={"/ForAll"} element={<Main />} />
+                    <Route path={"/ForAll"} element={<Notifications />} />
                     <Route path={"/Workers"} element={<Workers/>} />
                 </Route>
             </Routes>

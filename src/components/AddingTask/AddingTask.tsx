@@ -10,7 +10,6 @@ import { db } from "../../firebase/firebaseInit";
 import { Team } from "../../types/TeamType";
 import Options from "../Options/Options";
 
-
 type AddingTaskProps = {
     users: User[];
     teams: Team[];
@@ -33,9 +32,9 @@ function AddingTask({
     const [endDate, setEndDate] = useState("");
 
     useEffect(() => {
-        if (users) {
+        if (users.at(0)) {
             setCurrentTarget(users.at(0) as User);
-        } else if (teams) {
+        } else if (teams.at(0)) {
             setCurrentTarget(teams.at(0) as Team);
         } else {
             //foreveryone
@@ -51,7 +50,6 @@ function AddingTask({
             startDate: startDate,
             title: title,
         }).then((docRef) => {
-            console.log(currentTarget instanceof User);
             if (currentTarget instanceof User) {
                 const userRef = doc(db, "users", currentTarget!.email);
                 currentTarget?.tasks.push(docRef.id);
@@ -96,33 +94,37 @@ function AddingTask({
 
     return (
         <Modal isShowing={isShowingModal} closeModal={closeModal}>
-            <select
-                className={styles.select}
-                name="list"
-                onChange={(e) => setCurrentTargetByCode(e.currentTarget.value)}
-            >
-                <Options users={users} teams={teams} />
-            </select>
-            <TextInput
-                placeholder={"Title"}
-                value={title}
-                onChange={(i) => setTitle(i)}
-            />
-            <TextInput
-                placeholder={"Description"}
-                value={description}
-                onChange={(i) => setDescription(i)}
-            />
-            <DateInput
-                placeholder={"Start Date"}
-                value={startDate}
-                onChange={(i) => setStartDate(i)}
-            />
-            <DateInput
-                placeholder={"End Date"}
-                value={endDate}
-                onChange={(i) => setEndDate(i)}
-            />
+            <div>
+                <select
+                    className={styles.select}
+                    name="list"
+                    onChange={(e) =>
+                        setCurrentTargetByCode(e.currentTarget.value)
+                    }
+                >
+                    <Options users={users} teams={teams} />
+                </select>
+                <TextInput
+                    placeholder={"Title"}
+                    value={title}
+                    onChange={(i) => setTitle(i)}
+                />
+                <TextInput
+                    placeholder={"Description"}
+                    value={description}
+                    onChange={(i) => setDescription(i)}
+                />
+                <DateInput
+                    placeholder={"Start Date"}
+                    value={startDate}
+                    onChange={(i) => setStartDate(i)}
+                />
+                <DateInput
+                    placeholder={"End Date"}
+                    value={endDate}
+                    onChange={(i) => setEndDate(i)}
+                />
+            </div>
 
             <Button action={() => createTask()} size={Size.Medium} filled>
                 Create Task

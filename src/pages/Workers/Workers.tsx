@@ -1,12 +1,24 @@
+import Button from "../../components/Button/Button";
 import UserStore from "../../stores/UserStore";
 import styles from "./workers.module.css"
+import { useState } from 'react';
+import AddingTeam from "../../components/AddingTeam/AddingTeam";
+import { observer } from "mobx-react-lite";
+import ChangeUserInformation from '../../components/ChangeUserInformation/ChangeUserInformation';
 
 function Workers() {
+    const [showingTeam, setShowingTeam] = useState(false)
+    const [showingUserChange, setShowingUserChange] = useState(false)
+    console.log(UserStore.userData.user?.role === "manager")
     return (
         <main className={styles.main}>
             {UserStore.userData.user?.role === "manager" ? (
                             <>
-                                 
+                                <Button action={() => setShowingTeam(true)}>Create Team</Button>
+                                <AddingTeam closeModal={() => setShowingTeam(false)} isShowingModal={showingTeam}/> 
+
+                                <Button action={() => setShowingUserChange(true)}>Change user info</Button>
+                                <ChangeUserInformation closeModal={() => setShowingUserChange(false)} isShowingModal={showingUserChange}/> 
                             </>
                         ) : (
                             <></>
@@ -15,4 +27,4 @@ function Workers() {
     );
 }
 
-export default Workers;
+export default observer(Workers);

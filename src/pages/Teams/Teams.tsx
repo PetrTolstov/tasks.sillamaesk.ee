@@ -1,6 +1,7 @@
 import { observer } from "mobx-react-lite";
 import { useState, useEffect } from "react";
 import Table from "../../components/Table/Table";
+import getTeam from "../../firebase/services/getTeam";
 import getTeams from "../../firebase/services/getTeams";
 import UserStore from "../../stores/UserStore";
 import { Team, TeamType } from "../../types/TeamType";
@@ -33,8 +34,23 @@ function Teams() {
                     setIsLoading(false);
                 });
             } else {
-                //setCurrentUser(UserStore.userData.user);
-                setIsLoading(false)
+                (async () => {
+                    if(UserStore.userData.user){
+                        let list : Team[] = []
+                        for(let id of UserStore.userData.user.teams){
+                            let item = await getTeam(id)
+                            if(item){
+                                list.push(new Team(id, item.title, item.description, item.tasks))
+                            }
+                        }
+                       
+                        setCurrentTeam(list[0])
+                        setTeams(list)
+                        setIsLoading(false)
+                    }
+                })()
+
+                
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps

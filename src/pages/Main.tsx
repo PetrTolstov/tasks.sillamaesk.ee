@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import getTeams from "../firebase/services/getTeams";
 import getUsers from "../firebase/services/getUsers";
 import UserStore from "../stores/UserStore";
-import { TeamType, Team } from '../types/TeamType';
+import { TeamType, Team } from "../types/TeamType";
 import { User, UserType } from "../types/UserType";
 import { observer } from "mobx-react-lite";
 
@@ -12,7 +12,6 @@ function Main() {
     const [users, setUsers] = useState<User[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [currentUser, setCurrentUser] = useState<User | null>(null);
-
 
     function setCurrentUserByCode(code: string) {
         const result = users.filter((obj) => {
@@ -25,7 +24,7 @@ function Main() {
     }
 
     useEffect(() => {
-        if(UserStore.userData.user){
+        if (UserStore.userData.user) {
             if (
                 UserStore.userData.user?.role === "admin" ||
                 UserStore.userData.user?.role === "manager"
@@ -37,7 +36,7 @@ function Main() {
                 });
             } else {
                 setCurrentUser(UserStore.userData.user);
-                setIsLoading(false)
+                setIsLoading(false);
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -61,9 +60,15 @@ function Main() {
             </nav>
 
             {!isLoading ? (
-                <Table target={currentUser} setCurrentTarget={(newTarget : string) => setCurrentUserByCode(newTarget)} list={users} />
+                <Table
+                    target={currentUser}
+                    setCurrentTarget={(newTarget: string) =>
+                        setCurrentUserByCode(newTarget)
+                    }
+                    list={users}
+                />
             ) : (
-                <p>Loading...</p>
+                <>{UserStore.userData.isLoggedIn ? <p>Loading...</p> : <p>Please LogIn</p>}</>
             )}
         </main>
     );
