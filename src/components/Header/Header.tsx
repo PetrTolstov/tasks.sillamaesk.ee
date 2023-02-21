@@ -4,12 +4,12 @@ import Button from "../Button/Button";
 import RegistrationForm from "../RegistrationForm/RegistrationForm";
 import styles from "./header.module.css";
 import LogOut from "../../firebase/services/LogOut";
-import { observer } from 'mobx-react-lite';
+import { observer } from "mobx-react-lite";
 import { useLocation } from "react-router-dom";
 
 function Header() {
     const [isShowing, setIsShowing] = useState(false);
-    const path = useLocation().pathname
+    const path = useLocation().pathname;
     return (
         <header className={styles.header}>
             <div className={styles.aboveNav}>
@@ -28,16 +28,11 @@ function Header() {
                             action={() => {
                                 LogOut();
                                 localStorage.setItem("isLoggedIn", "");
-                                window.location.reload()
+                                window.location.reload();
                             }}
                         >
                             Log Out
                         </Button>
-                        <img
-                            src={"notification.svg"}
-                            alt={"Notifications"}
-                            className={styles.notification}
-                        />
                     </div>
                 ) : (
                     <>
@@ -54,11 +49,20 @@ function Header() {
                 <nav className={styles.nav}>
                     <a
                         href={"/"}
-                        className={[styles.link, (path === '/Workers') ? '' : styles.primaryLink ].join(" ")}
+                        className={[
+                            styles.link,
+                            path === "/Workers" ? "" : styles.primaryLink,
+                        ].join(" ")}
                     >
                         Ülesanded
                     </a>
-                    <a href={"/Workers"} className={[styles.link, (path === '/Workers') ? styles.primaryLink : '' ].join(" ")}>
+                    <a
+                        href={"/Workers"}
+                        className={[
+                            styles.link,
+                            path === "/Workers" ? styles.primaryLink : "",
+                        ].join(" ")}
+                    >
                         Töötajad
                     </a>
                 </nav>
@@ -69,5 +73,12 @@ function Header() {
     );
 }
 
+export default observer(Header);
 
-export default observer(Header)
+/*
+<img
+                            src={"notification.svg"}
+                            alt={"Notifications"}
+                            className={styles.notification}
+                        />
+                        */

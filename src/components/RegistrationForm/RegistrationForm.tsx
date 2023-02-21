@@ -8,6 +8,7 @@ import {
 } from "firebase/auth";
 import { auth, db } from "../../firebase/firebaseInit";
 import { setDoc, doc } from "firebase/firestore/lite";
+import styles from "./RegistrationForm.module.css"
 
 type RegistrationFormProps = {
     isShowingModal: boolean;
@@ -33,28 +34,32 @@ function RegistrationForm({
     const [role, setRole] = useState("user");
 
     function register() {
-        createUserWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                setDoc(doc(db, "users", email), {
-                    firstName: firstName,
-                    lastName: lastName,
-                    email: email,
-                    number: number,
-                    personalCode: personalCode,
-                    active: false,
-                    role: role,
-                    tasks: [],
-                    teams: [],
+        if (firstName && lastName && email && number && personalCode) {
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    setDoc(doc(db, "users", email), {
+                        firstName: firstName,
+                        lastName: lastName,
+                        email: email,
+                        number: number,
+                        personalCode: personalCode,
+                        active: false,
+                        role: role,
+                        tasks: [],
+                        teams: [],
+                    });
+                })
+                .then(() => {
+                    localStorage.setItem("isLoggedIn", "1");
+                    closeModal();
+                })
+                .catch((error) => {
+                    const errorMessage = error.message;
+                    console.log(errorMessage);
                 });
-            })
-            .then(() => {
-                localStorage.setItem("isLoggedIn", "1");
-                closeModal();
-            })
-            .catch((error) => {
-                const errorMessage = error.message;
-                console.log(errorMessage);
-            });
+        } else {
+            alert("Please write all data");
+        }
     }
 
     function login() {
@@ -74,26 +79,34 @@ function RegistrationForm({
         <Modal isShowing={isShowingModal} closeModal={closeModal}>
             {modalType === ModalTypes.Login ? (
                 <>
-                    <TextInput
-                        placeholder={"Email"}
-                        value={email}
-                        onChange={(i) => setEmail(i)}
-                    />
-                    <TextInput
-                        placeholder={"Password"}
-                        value={password}
-                        isSecure
-                        onChange={(i) => setPassword(i)}
-                    />
-                    <Button action={() => login()} size={Size.Medium} filled>
-                        Login
-                    </Button>
-                    <Button
-                        action={() => setModalType(ModalTypes.Registration)}
-                        size={Size.Medium}
-                    >
-                        Register
-                    </Button>
+                    <div>
+                        <TextInput
+                            placeholder={"Email"}
+                            value={email}
+                            onChange={(i) => setEmail(i)}
+                        />
+                        <TextInput
+                            placeholder={"Password"}
+                            value={password}
+                            isSecure
+                            onChange={(i) => setPassword(i)}
+                        />
+                    </div>
+                    <div className={styles.container}>
+                        <Button
+                            action={() => login()}
+                            size={Size.Large}
+                            filled
+                        >
+                            Login
+                        </Button>
+                        <Button
+                            action={() => setModalType(ModalTypes.Registration)}
+                            size={Size.Large}
+                        >
+                            Register
+                        </Button>
+                    </div>
                 </>
             ) : (
                 <>

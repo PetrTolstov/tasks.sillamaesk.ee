@@ -6,6 +6,9 @@ import { useEffect } from 'react';
 
 
 function Layout() {
+    useEffect(() => {
+        console.log(UserStore.userData.user?.active)
+    }, [UserStore.userData.user])
     
   if(UserStore.userData.user){
     if(UserStore.userData.user?.active){

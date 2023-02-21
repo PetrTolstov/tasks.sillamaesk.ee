@@ -26,6 +26,7 @@ export default function TextInput({
                     onChange(e.currentTarget.value);
                 }}
                 value={value}
+                required
             />
             <span className={styles.label}></span>
             <span className={styles.focus_bg}></span>
