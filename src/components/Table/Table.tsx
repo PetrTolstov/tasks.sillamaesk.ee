@@ -80,7 +80,7 @@ function Table({ target, list, setCurrentTarget }: TableProps) {
                     <></>
                 )}
 
-                <span className={styles.notification}></span>
+                
             </div>
 
             {target ? (

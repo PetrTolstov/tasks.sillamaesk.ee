@@ -130,7 +130,7 @@ function TableItem({ id, target }: TableItemProps) {
                                         />
                                     </span>
                                     {task.checked ? (
-                                        <span className={styles.readyStatus}>
+                                        <span className={styles.readyStatus} >
                                             Kinnitatud
                                         </span>
                                     ) : (

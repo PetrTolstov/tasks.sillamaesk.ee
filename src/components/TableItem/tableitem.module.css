@@ -49,3 +49,9 @@
     backdrop-filter: blur(2.5px);
 }
 
+.readyStatus:hover {
+    backdrop-filter: none;
+    color: transparent;
+}
+    
+
