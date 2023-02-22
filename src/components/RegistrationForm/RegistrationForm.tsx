@@ -8,7 +8,7 @@ import {
 } from "firebase/auth";
 import { auth, db } from "../../firebase/firebaseInit";
 import { setDoc, doc } from "firebase/firestore/lite";
-import styles from "./RegistrationForm.module.css"
+import styles from "./RegistrationForm.module.css";
 
 type RegistrationFormProps = {
     isShowingModal: boolean;
@@ -86,47 +86,43 @@ function RegistrationForm({
                             onChange={(i) => setEmail(i)}
                         />
                         <TextInput
-                            placeholder={"Password"}
+                            placeholder={"Parool"}
                             value={password}
                             isSecure
                             onChange={(i) => setPassword(i)}
                         />
                     </div>
                     <div className={styles.container}>
-                        <Button
-                            action={() => login()}
-                            size={Size.Large}
-                            filled
-                        >
-                            Login
+                        <Button action={() => login()} size={Size.Large} filled>
+                            Logi sisse
                         </Button>
                         <Button
                             action={() => setModalType(ModalTypes.Registration)}
                             size={Size.Large}
                         >
-                            Register
+                            Registreeri
                         </Button>
                     </div>
                 </>
             ) : (
                 <>
                     <TextInput
-                        placeholder={"First Name"}
+                        placeholder={"Eesnimi"}
                         value={firstName}
                         onChange={(i) => setFirstName(i)}
                     />
                     <TextInput
-                        placeholder={"Last Name"}
+                        placeholder={"Perekonnanimi"}
                         value={lastName}
                         onChange={(i) => setLastName(i)}
                     />
                     <TextInput
-                        placeholder={"Pesonal Code"}
+                        placeholder={"Isikukood"}
                         value={personalCode}
                         onChange={(i) => setPesonalCode(i)}
                     />
                     <TextInput
-                        placeholder={"Number"}
+                        placeholder={"Telefoninumber"}
                         value={number}
                         onChange={(i) => setNumber(i)}
                     />
@@ -136,7 +132,7 @@ function RegistrationForm({
                         onChange={(i) => setEmail(i)}
                     />
                     <TextInput
-                        placeholder={"Password"}
+                        placeholder={"Parool"}
                         value={password}
                         onChange={(i) => setPassword(i)}
                     />
@@ -146,21 +142,21 @@ function RegistrationForm({
                         onChange={(e) => setRole(e.currentTarget.value)}
                     >
                         <option value={"user"} key={1}>
-                            Worker
+                            Tööline
                         </option>
                         <option value={"admin"} key={2}>
-                            Administrator
+                            Administraator
                         </option>
                     </select>
 
                     <Button action={() => register()} size={Size.Medium} filled>
-                        Register
+                        Registreeri
                     </Button>
                     <Button
                         action={() => setModalType(ModalTypes.Login)}
                         size={Size.Medium}
                     >
-                        Login
+                        Logi sisse
                     </Button>
                 </>
             )}

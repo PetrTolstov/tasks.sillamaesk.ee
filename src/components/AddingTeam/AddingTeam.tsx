@@ -30,12 +30,12 @@ function AddingTeam({ isShowingModal, closeModal }: AddingTeamProps) {
         <Modal isShowing={isShowingModal} closeModal={closeModal}>
             <div>
                 <TextInput
-                    placeholder={"Title"}
+                    placeholder={"Pealkiri"}
                     value={title}
                     onChange={(i) => setTitle(i)}
                 />
                 <TextInput
-                    placeholder={"Description"}
+                    placeholder={"Kirjeldus"}
                     value={description}
                     onChange={(i) => setDescription(i)}
                 />

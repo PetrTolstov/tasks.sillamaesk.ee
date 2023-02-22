@@ -121,22 +121,22 @@ function AddingTask({
                     <></>
                 )}
                 <TextInput
-                    placeholder={"Title"}
+                    placeholder={"Pealkiri"}
                     value={title}
                     onChange={(i) => setTitle(i)}
                 />
                 <TextInput
-                    placeholder={"Description"}
+                    placeholder={"Kirjeldus"}
                     value={description}
                     onChange={(i) => setDescription(i)}
                 />
                 <DateInput
-                    placeholder={"Start Date"}
+                    placeholder={"Algus kuupäev"}
                     value={startDate}
                     onChange={(i) => setStartDate(i)}
                 />
                 <DateInput
-                    placeholder={"End Date"}
+                    placeholder={"Lõppkuupäev"}
                     value={endDate}
                     onChange={(i) => setEndDate(i)}
                 />
@@ -144,9 +144,9 @@ function AddingTask({
 
             <Button action={() => createTask()} size={Size.Medium} filled>
                 {users.at(0) || teams.at(0) ? (
-                    <>Create Task</>
+                    <>Loo ülesanne</>
                 ) : (
-                    <>Create Notification</>
+                    <>Loo teatis</>
                 )}
             </Button>
         </Modal>

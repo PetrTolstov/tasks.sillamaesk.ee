@@ -14,10 +14,10 @@ function Workers() {
         <main className={styles.main}>
             {UserStore.userData.user?.role === "manager" ? (
                             <>
-                                <Button action={() => setShowingTeam(true)}>Create Team</Button>
+                                <Button action={() => setShowingTeam(true)}>Loo meeskond</Button>
                                 <AddingTeam closeModal={() => setShowingTeam(false)} isShowingModal={showingTeam}/> 
 
-                                <Button action={() => setShowingUserChange(true)}>Change user info</Button>
+                                <Button action={() => setShowingUserChange(true)}>Muutke kasutajateavet</Button>
                                 <ChangeUserInformation closeModal={() => setShowingUserChange(false)} isShowingModal={showingUserChange}/> 
                             </>
                         ) : (

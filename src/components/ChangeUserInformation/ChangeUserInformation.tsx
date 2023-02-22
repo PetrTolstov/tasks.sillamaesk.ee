@@ -124,23 +124,23 @@ function ChangeUserInformation({
                     <Options users={users} teams={[]} />
                 </select>
                 <TextInput
-                    placeholder={"First name"}
+                    placeholder={"Eesnimi"}
                     value={firstName}
                     onChange={(i) => setFirstName(i)}
                 />
                 <TextInput
-                    placeholder={"Last name"}
+                    placeholder={"Perekonnanimi"}
                     value={lastName}
                     onChange={(i) => setLastName(i)}
                 />
                 <TextInput
-                    placeholder={"Personal code"}
+                    placeholder={"Isikukood"}
                     value={personalCode}
                     onChange={(i) => setPersonalCode(i)}
                 />
 
                 <TextInput
-                    placeholder={"Phone Number"}
+                    placeholder={"Telefoninumber"}
                     value={number}
                     onChange={(i) => setNumber(i)}
                 />
@@ -151,8 +151,8 @@ function ChangeUserInformation({
                     onChange={(e) => setActive(Boolean(e.currentTarget.value))}
                     value={active ? "1" : ""}
                 >
-                    <option value={"1"}>Active</option>
-                    <option value={""}>Not active</option>
+                    <option value={"1"}>Aktiivne</option>
+                    <option value={""}>Pole aktiivne</option>
                 </select>
 
                 <p>User Teams</p>
@@ -172,7 +172,7 @@ function ChangeUserInformation({
                     }}
                     value={"default"}
                 >
-                    <option value={"default"}>Choose team</option>
+                    <option value={"default"}>Valige meeskond</option>
                     <Options
                         teams={teams.filter((el) => {
                             return !userTeams.includes(el.id);
@@ -197,18 +197,18 @@ function ChangeUserInformation({
                                     );
                                 }}
                             >
-                                Delete
+                                Kustuta
                             </Button>
                         </div>
                     ))}
             </div>
 
             <Button action={() => ChangeInfo()} size={Size.Medium} filled>
-                Change Info
+                Muuda teavet
             </Button>
 
             <Button action={() => deleteAccount()} size={Size.Medium}>
-                Delete Account
+                Kustuta konto
             </Button>
         </Modal>
     );

@@ -22,7 +22,7 @@ function Layout() {
         return (
             <>
                 <Header/>
-                <p>Your account is not active</p>
+                <p>Teie konto pole aktiivne</p>
             </>
           );
     }
@@ -30,7 +30,7 @@ function Layout() {
     return (
         <>
             <Header/>
-            <p>Please Log in</p>
+            <p>Palun logige sisse</p>
         </>
       );
   }

@@ -41,7 +41,7 @@ function NotificationTable() {
                         ) : (
                             <></>
                         )}
-                <span className={styles.notification}></span>
+               
             </div>
 
             {notifications ? (
