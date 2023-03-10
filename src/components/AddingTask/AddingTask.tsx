@@ -40,7 +40,10 @@ function AddingTask({
 
     useEffect(() => {
         if (users.at(0)) {
-            setCurrentTarget(users.at(0) as User);
+            let {id, firstName, lastName, personalCode, email, number, teams, tasks, active, role, } = users.at(0) as User
+            let user = new User(id, firstName, lastName, personalCode, email, number, teams, tasks, active, role)
+            setCurrentTarget(user);
+            
         } else if (teams.at(0)) {
             setCurrentTarget(teams.at(0) as Team);
         }
@@ -153,7 +156,7 @@ function AddingTask({
         let result: User[] | Team[] | null;
         if (users.at(0)) {
             result = users.filter((obj) => {
-                return obj.id === code;
+                return obj.personalCode === code;
             });
         } else if (teams.at(0)) {
             result = teams.filter((obj) => {
@@ -180,7 +183,7 @@ function AddingTask({
                         onChange={(e) =>
                             setCurrentTargetByCode(e.currentTarget.value)
                         }
-                        value={currentTarget?.id}
+                        value={currentTarget instanceof User ? currentTarget.personalCode : currentTarget?.id}
                     >
                         <Options users={users} teams={teams} />
                     </select>
