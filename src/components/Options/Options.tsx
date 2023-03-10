@@ -14,7 +14,7 @@ export default function Options({ users, teams }: OptionsProps) {
         return (
             <>
                 {users.map((user) => (
-                    <option value={user.id} key={uuid()}>
+                    <option value={user.personalCode} key={uuid()}>
                         {user.firstName} {user.lastName}
                     </option>
                 ))}

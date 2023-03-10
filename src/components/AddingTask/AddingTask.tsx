@@ -94,6 +94,7 @@ function AddingTask({
                         );
 
                         const tasksId = tasksAsObj
+                            .filter((el) => el)
                             .sort(compareByDate)
                             .map((el) => el?.id);
 
@@ -117,6 +118,7 @@ function AddingTask({
                         );
 
                         const tasksId = tasksAsObj
+                            .filter((el) => el)
                             .sort(compareByDate)
                             .map((el) => el?.id);
 

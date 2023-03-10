@@ -73,8 +73,9 @@ function ChangeUserInformation({
         result = users.filter((obj) => {
             return obj.personalCode === code;
         });
-
+        
         if (result && result[0]) {
+            
             setCurrentUser(result[0]);
         }
     }
@@ -104,6 +105,7 @@ function ChangeUserInformation({
             deleteDoc(doc(db, "users", currentUser.id))
                 .then((res) => {
                     closeModal();
+                    window.location.reload()
                 })
                 .catch((e) => {
                     console.log(e);
@@ -120,6 +122,7 @@ function ChangeUserInformation({
                     onChange={(e) =>
                         setCurrentUserByCode(e.currentTarget.value)
                     }
+                    value={currentUser?.personalCode}
                 >
                     <Options users={users} teams={[]} />
                 </select>

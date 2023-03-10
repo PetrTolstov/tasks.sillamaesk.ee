@@ -9,12 +9,13 @@ import getNotifications from "../../firebase/services/getNotifications";
 import UserStore from "../../stores/UserStore";
 import AddingTask from "../AddingTask/AddingTask";
 import Button from "../Button/Button";
-
+import { deleteDoc, doc } from "firebase/firestore/lite";
+import { db } from "../../firebase/firebaseInit";
+import AddToArchive from "../../services/AddToArchive";
 
 function NotificationTable() {
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [isShowing, setIsShowing] = useState(false);
-
 
     useEffect(() => {
         getNotifications().then((res) => {
@@ -27,21 +28,18 @@ function NotificationTable() {
             <div className={styles.headerOfTable}>
                 <h2>Isiklikud ülesanded</h2>
                 {UserStore.userData.user?.role === "manager" ? (
-                            <>
-                                <Button action={() => setIsShowing(true)}>
-                                    +
-                                </Button>
-                                <AddingTask
-                                    users={[]}
-                                    teams={[]}
-                                    isShowingModal={isShowing}
-                                    closeModal={() => setIsShowing(false)}
-                                />
-                            </>
-                        ) : (
-                            <></>
-                        )}
-               
+                    <>
+                        <Button action={() => setIsShowing(true)}>+</Button>
+                        <AddingTask
+                            users={[]}
+                            teams={[]}
+                            isShowingModal={isShowing}
+                            closeModal={() => setIsShowing(false)}
+                        />
+                    </>
+                ) : (
+                    <></>
+                )}
             </div>
 
             {notifications ? (
@@ -55,6 +53,41 @@ function NotificationTable() {
                             <span className={itemStyles.date}>
                                 {el.startDate}-{el.endDate}
                             </span>
+                            {UserStore.userData.user?.role === "manager" ? (
+                                <button
+                                    className={styles.buttonDel}
+                                    onClick={() => {
+                                        deleteDoc(
+                                            doc(db, "notifications", el.id)
+                                        )
+                                            .then((res) => {
+                                                console.log(res);
+                                                AddToArchive({
+                                                    title: el.title,
+                                                    description: el.description,
+                                                    startDate: el.startDate,
+                                                    endDate: el.endDate,
+                                                });
+                                            })
+                                            .catch((e) => {
+                                                console.log(e);
+                                            });
+                                        setNotifications((prevState) => {
+                                            let a = prevState;
+                                            if (a) {
+                                                a = a.filter(
+                                                    (elem) => el.id !== elem.id
+                                                );
+                                            }
+                                            return a;
+                                        });
+                                    }}
+                                >
+                                    Kustuta töö
+                                </button>
+                            ) : (
+                                <></>
+                            )}
                         </>
                     </article>
                 ))

@@ -6,8 +6,10 @@ import styles from "./tableitem.module.css";
 import { TaskType } from "../../types/TaskType";
 import { db } from "../../firebase/firebaseInit";
 import { User, UserType } from "../../types/UserType";
-import { observer } from 'mobx-react-lite';
+import { observer } from "mobx-react-lite";
 import { Team } from "../../types/TeamType";
+import Button from "../Button/Button";
+import AddToArchive from "../../services/AddToArchive";
 
 type TableItemProps = {
     id: string;
@@ -25,9 +27,9 @@ function TableItem({ id, target }: TableItemProps) {
         (async () => {
             getTasks(id.split(" ").join("")).then((res) => {
                 setTask(res);
-                
+
                 if (!res) {
-                    if(target instanceof User){
+                    if (target instanceof User) {
                         const userRef = doc(db, "users", target.email);
                         let list = target?.tasks.filter((value) => {
                             return value !== id;
@@ -35,7 +37,7 @@ function TableItem({ id, target }: TableItemProps) {
                         updateDoc(userRef, {
                             tasks: list,
                         });
-                    } else if(target instanceof Team){
+                    } else if (target instanceof Team) {
                         const userRef = doc(db, "teams", target.id);
                         let list = target?.tasks.filter((value) => {
                             return value !== id;
@@ -44,9 +46,7 @@ function TableItem({ id, target }: TableItemProps) {
                             tasks: list,
                         });
                     }
-                    
                 }
-                
             });
         })();
     }, [id, target?.tasks]);
@@ -55,33 +55,36 @@ function TableItem({ id, target }: TableItemProps) {
         const taskRef = doc(db, "tasks", id);
 
         if (status === Status.Checked) {
-            deleteDoc(doc(db, "tasks", id)).then((res) => {
-                console.log(res)
-            }).catch((e) => {
-                console.log(e)
-            });
+            deleteDoc(doc(db, "tasks", id))
+                .then((res) => {
+                    console.log(res);
+                    if(task){
+                        AddToArchive({title : task.title, description: task.description, startDate: task.startDate,endDate: task.endDate})                 
+                    }
+                    })
+                .catch((e) => {
+                    console.log(e);
+                });
             setTask((prevState) => {
-                let a = prevState
-                if(a){
-                    a.checked = value
-                    a = JSON.parse(JSON.stringify(a))
-
+                let a = prevState;
+                if (a) {
+                    a.checked = value;
+                    a = JSON.parse(JSON.stringify(a));
                 }
-                return a 
-            } )
+                return a;
+            });
         } else if (status === Status.Done) {
             updateDoc(taskRef, {
                 done: value,
-            })
+            });
             setTask((prevState) => {
-                let a = prevState
-                if(a){
-                    a.done = value
-                    a = JSON.parse(JSON.stringify(a))
-
+                let a = prevState;
+                if (a) {
+                    a.done = value;
+                    a = JSON.parse(JSON.stringify(a));
                 }
-                return a 
-            } )
+                return a;
+            });
         }
         // window.location.reload();
     }
@@ -113,6 +116,29 @@ function TableItem({ id, target }: TableItemProps) {
                                             }
                                         />
                                     </span>
+                                    <button
+                                        className={styles.buttonDel}
+                                        onClick={() => {
+                                            deleteDoc(doc(db, "tasks", id))
+                                                .then((res) => {
+                                                    console.log(id);
+                                                    AddToArchive({
+                                                        title: task.title,
+                                                        description:
+                                                            task.description,
+                                                        startDate:
+                                                            task.startDate,
+                                                        endDate: task.endDate,
+                                                    });
+                                                })
+                                                .catch((e) => {
+                                                    console.log(e);
+                                                });
+                                            setTask(null);
+                                        }}
+                                    >
+                                        Kustuta töö
+                                    </button>
                                     {task.checked ? (
                                         <span className={styles.readyStatus}>
                                             Kinnitatud
@@ -148,7 +174,7 @@ function TableItem({ id, target }: TableItemProps) {
                                         />
                                     </span>
                                     {task.checked ? (
-                                        <span className={styles.readyStatus} >
+                                        <span className={styles.readyStatus}>
                                             Kinnitatud
                                         </span>
                                     ) : (
@@ -180,4 +206,4 @@ function TableItem({ id, target }: TableItemProps) {
     );
 }
 
-export default observer(TableItem)
+export default observer(TableItem);

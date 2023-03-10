@@ -1,15 +1,25 @@
-import { doc, getDoc } from "firebase/firestore/lite";
+import { collection, doc, getDoc, getDocs } from "firebase/firestore/lite";
 import { db } from "../firebaseInit";
-import { Task } from '../../types/TaskType';
+import { Task } from "../../types/TaskType";
+import { ArchiveArgs } from "../../services/AddToArchive";
 
-export default async function getTask(id: string) {
-    const ref = doc(db, "archive", id);
+export default async function getArchive() {
+    const querySnapshot = await getDocs(collection(db, "archive"));
+    let list: ArchiveArgs[] = [];
 
-    const docSnap = await getDoc(ref);
-    if (docSnap.exists()) {
-        const task = docSnap.data();
-        return task as Task;
-    } else {
-        return null;
-    }
+    querySnapshot.forEach((doc) => {
+        let obj = doc.data() ;
+        obj.startDate = obj.startDate.toDate().toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "numeric",
+            year: "numeric",
+        });
+        obj.endDate = obj.endDate.toDate().toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "numeric",
+            year: "numeric",
+        });
+        list.push(obj as ArchiveArgs);
+    });
+    return list;
 }
