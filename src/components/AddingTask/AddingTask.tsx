@@ -5,10 +5,17 @@ import TextInput from "../TextInput/TextInput";
 import Button, { Size } from "../Button/Button";
 import DateInput from "../DateInput/DateInput";
 import { UserType, User } from "../../types/UserType";
-import { addDoc, collection, doc, updateDoc } from "firebase/firestore/lite";
+import {
+    addDoc,
+    collection,
+    doc,
+    Timestamp,
+    updateDoc,
+} from "firebase/firestore/lite";
 import { db } from "../../firebase/firebaseInit";
 import { Team } from "../../types/TeamType";
 import Options from "../Options/Options";
+import getTask from "../../firebase/services/getTasks";
 
 type AddingTaskProps = {
     users: User[];
@@ -36,61 +43,117 @@ function AddingTask({
             setCurrentTarget(users.at(0) as User);
         } else if (teams.at(0)) {
             setCurrentTarget(teams.at(0) as Team);
-        } else {
-            //foreveryone
         }
     }, [users, teams]);
 
+    function compareByDate(a: any, b: any) {
+        var AParts = a.endDate.split("/");
+        var A = new Date(+AParts[2], AParts[1] - 1, +AParts[0]).getTime();
+
+        var BParts = b.endDate.split("/");
+        var B = new Date(+BParts[2], BParts[1] - 1, +BParts[0]).getTime();
+
+        if (A < B) {
+            return -1;
+        }
+        if (A > B) {
+            return 1;
+        }
+        return 0;
+    }
+
     function createTask() {
-        if (users.at(0) || teams.at(0)) {
-            addDoc(collection(db, "tasks"), {
-                checked: false,
-                description: description,
-                done: false,
-                endDate: endDate,
-                startDate: startDate,
-                title: title,
-            }).then((docRef) => {
-                if (currentTarget instanceof User) {
-                    const userRef = doc(db, "users", currentTarget!.email);
-                    currentTarget?.tasks.push(docRef.id);
-                    updateDoc(userRef, {
-                        tasks: currentTarget!.tasks,
-                    });
+        try {
+            if (users.at(0) || teams.at(0)) {
+                addDoc(collection(db, "tasks"), {
+                    checked: false,
+                    description: description,
+                    done: false,
+                    endDate: Timestamp.fromDate(
+                        new Date(endDate.split("-").join("/"))
+                    ),
+                    startDate: Timestamp.fromDate(
+                        new Date(startDate.split("-").join("/"))
+                    ),
+                    title: title,
+                }).then(async (docRef) => {
+                    console.log(currentTarget);
+                    console.log(currentTarget instanceof Team);
+                    if (currentTarget instanceof User) {
+                        const userRef = doc(db, "users", currentTarget!.email);
+                        currentTarget?.tasks.push(docRef.id);
+
+                        let tasksAsObj = await Promise.all(
+                            currentTarget?.tasks.map(async (id) => {
+                                let obj = await getTask(id);
+                                if (obj) {
+                                    obj.id = id;
+                                }
+                                return obj;
+                            })
+                        );
+
+                        const tasksId = tasksAsObj
+                            .sort(compareByDate)
+                            .map((el) => el?.id);
+
+                        updateDoc(userRef, {
+                            tasks: tasksId,
+                        });
+                        closeModal();
+                        window.location.reload();
+                    } else if (currentTarget instanceof Team) {
+                        const userRef = doc(db, "teams", currentTarget!.id);
+                        currentTarget?.tasks.push(docRef.id);
+
+                        let tasksAsObj = await Promise.all(
+                            currentTarget?.tasks.map(async (id) => {
+                                let obj = await getTask(id);
+                                if (obj) {
+                                    obj.id = id;
+                                }
+                                return obj;
+                            })
+                        );
+
+                        const tasksId = tasksAsObj
+                            .sort(compareByDate)
+                            .map((el) => el?.id);
+
+                        updateDoc(userRef, {
+                            tasks: tasksId,
+                        });
+                        closeModal();
+                        window.location.reload();
+                    }
+                });
+            } else {
+                addDoc(collection(db, "notifications"), {
+                    description: description,
+                    endDate: Timestamp.fromDate(
+                        new Date(endDate.split("-").join("/"))
+                    ),
+                    startDate: Timestamp.fromDate(
+                        new Date(startDate.split("-").join("/"))
+                    ),
+                    title: title,
+                }).then((docRef) => {
                     closeModal();
                     window.location.reload();
-                } else if (currentTarget instanceof Team) {
-                    const userRef = doc(db, "teams", currentTarget!.id);
-                    currentTarget?.tasks.push(docRef.id);
-                    updateDoc(userRef, {
-                        tasks: currentTarget!.tasks,
-                    });
-                    closeModal();
-                    window.location.reload();
-                } else {
-                    //foreveryone
-                }
-            });
-        } else {
-            addDoc(collection(db, "notifications"), {
-                description: description,
-                endDate: endDate,
-                startDate: startDate,
-                title: title,
-            }).then((docRef) => {
-                closeModal();
-                window.location.reload();
-            });
+                });
+            }
+        } catch (e) {
+            alert("Kirjutage kuupäevad");
         }
     }
 
     function setCurrentTargetByCode(code: string) {
         let result: User[] | Team[] | null;
-        if (users) {
+        if (users.at(0)) {
             result = users.filter((obj) => {
-                return obj.personalCode === code;
+                return obj.id === code;
             });
-        } else if (teams) {
+        } else if (teams.at(0)) {
             result = teams.filter((obj) => {
                 return obj.id === code;
             });
@@ -100,6 +163,7 @@ function AddingTask({
         }
 
         if (result && result[0]) {
+            console.log(code);
             setCurrentTarget(result[0]);
         }
     }
@@ -114,6 +178,7 @@ function AddingTask({
                         onChange={(e) =>
                             setCurrentTargetByCode(e.currentTarget.value)
                         }
+                        value={currentTarget?.id}
                     >
                         <Options users={users} teams={teams} />
                     </select>

@@ -51,7 +51,7 @@ function Header() {
                         href={"/"}
                         className={[
                             styles.link,
-                            path === "/Workers" ? "" : styles.primaryLink,
+                            path === "/" ? styles.primaryLink : "",
                         ].join(" ")}
                     >
                         Ülesanded
@@ -64,6 +64,15 @@ function Header() {
                         ].join(" ")}
                     >
                         Töötajad
+                    </a>
+                    <a
+                        href={"/Archive"}
+                        className={[
+                            styles.link,
+                            path === "/Archive" ? styles.primaryLink : "",
+                        ].join(" ")}
+                    >
+                        Arhiiv
                     </a>
                 </nav>
             ) : (

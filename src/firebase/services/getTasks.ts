@@ -1,4 +1,4 @@
-import { doc, getDoc } from "firebase/firestore/lite";
+import { doc, getDoc, Timestamp } from "firebase/firestore/lite";
 import { db } from "../firebaseInit";
 import { Task } from '../../types/TaskType';
 
@@ -7,7 +7,13 @@ export default async function getTask(id: string) {
 
     const docSnap = await getDoc(ref);
     if (docSnap.exists()) {
-        const task = docSnap.data();
+        let task = docSnap.data();
+        task.startDate = task.startDate.toDate().toLocaleDateString('en-GB', {
+            day: 'numeric', month: 'numeric', year: 'numeric'
+          })
+        task.endDate = task.endDate.toDate().toLocaleDateString('en-GB', {
+            day: 'numeric', month: 'numeric', year: 'numeric'
+          })
         return task as Task;
     } else {
         return null;

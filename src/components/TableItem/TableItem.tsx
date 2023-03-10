@@ -60,12 +60,30 @@ function TableItem({ id, target }: TableItemProps) {
             }).catch((e) => {
                 console.log(e)
             });
+            setTask((prevState) => {
+                let a = prevState
+                if(a){
+                    a.checked = value
+                    a = JSON.parse(JSON.stringify(a))
+
+                }
+                return a 
+            } )
         } else if (status === Status.Done) {
             updateDoc(taskRef, {
                 done: value,
-            });
+            })
+            setTask((prevState) => {
+                let a = prevState
+                if(a){
+                    a.done = value
+                    a = JSON.parse(JSON.stringify(a))
+
+                }
+                return a 
+            } )
         }
-        window.location.reload();
+        // window.location.reload();
     }
 
     return (

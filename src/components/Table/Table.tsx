@@ -10,6 +10,7 @@ import AddingTask from "../AddingTask/AddingTask";
 import { Team, TeamType } from "../../types/TeamType";
 import getTeams from "../../firebase/services/getTeams";
 import Options from "../Options/Options";
+import { Task } from "../../types/TaskType";
 
 export enum TableFor {
     Users,
@@ -27,16 +28,14 @@ function Table({ target, list, setCurrentTarget }: TableProps) {
     const [isShowing, setIsShowing] = useState(false);
     const [users, setUsers] = useState<User[]>([]);
     const [teams, setTeams] = useState<Team[]>([]);
-    const [selectTarget, setSelectTarget] = useState(target?.id)
+    const [selectTarget, setSelectTarget] = useState(target?.id);
 
     useEffect(() => {
-        
         if (target instanceof User) {
             setUsers(list as User[]);
         } else if (target instanceof Team) {
             setTeams(list as Team[]);
-        }else{
-            
+        } else {
         }
     }, [list, target]);
 
@@ -47,18 +46,19 @@ function Table({ target, list, setCurrentTarget }: TableProps) {
                 <h2>Isiklikud ülesanded</h2>
 
                 {UserStore.userData.user?.role === "manager" ||
-                UserStore.userData.user?.role === "admin" || target instanceof Team ? (
+                UserStore.userData.user?.role === "admin" ||
+                target instanceof Team ? (
                     <>
                         <select
                             className={styles.select}
                             name="list"
                             onChange={(e) => {
-                                setCurrentTarget(e.currentTarget.value)
-                                setSelectTarget(e.currentTarget.value)
+                                setCurrentTarget(e.currentTarget.value);
+                                setSelectTarget(e.currentTarget.value);
                             }}
                             value={selectTarget}
                         >
-                            <Options users={users} teams={teams}/>
+                            <Options users={users} teams={teams} />
                         </select>
                         {UserStore.userData.user?.role === "manager" ? (
                             <>
@@ -79,19 +79,14 @@ function Table({ target, list, setCurrentTarget }: TableProps) {
                 ) : (
                     <></>
                 )}
-
-                
             </div>
 
             {target ? (
-                target.tasks.map((el) => (
-                    <TableItem id={el} key={el} target={target} />
-                ))
+                target.tasks
+                    .map((el) => <TableItem id={el} key={el} target={target} />)
             ) : (
                 <></>
             )}
-
-            
         </article>
     );
 }
