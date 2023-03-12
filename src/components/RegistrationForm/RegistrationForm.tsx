@@ -37,7 +37,8 @@ function RegistrationForm({
         if (firstName && lastName && email && number && personalCode) {
             createUserWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
-                    setDoc(doc(db, "users", email), {
+                    console.log(userCredential)
+                    setDoc(doc(db, "users", userCredential.user.uid), {
                         firstName: firstName,
                         lastName: lastName,
                         email: email,

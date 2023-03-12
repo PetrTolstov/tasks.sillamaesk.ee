@@ -80,10 +80,8 @@ function AddingTask({
                     ),
                     title: title,
                 }).then(async (docRef) => {
-                    console.log(currentTarget);
-                    console.log(currentTarget instanceof Team);
                     if (currentTarget instanceof User) {
-                        const userRef = doc(db, "users", currentTarget!.email);
+                        const userRef = doc(db, "users", currentTarget!.id);
                         currentTarget?.tasks.push(docRef.id);
 
                         let tasksAsObj = await Promise.all(
@@ -156,7 +154,7 @@ function AddingTask({
         let result: User[] | Team[] | null;
         if (users.at(0)) {
             result = users.filter((obj) => {
-                return obj.personalCode === code;
+                return obj.id === code;
             });
         } else if (teams.at(0)) {
             result = teams.filter((obj) => {
@@ -168,7 +166,6 @@ function AddingTask({
         }
 
         if (result && result[0]) {
-            console.log(code);
             setCurrentTarget(result[0]);
         }
     }
@@ -183,7 +180,7 @@ function AddingTask({
                         onChange={(e) =>
                             setCurrentTargetByCode(e.currentTarget.value)
                         }
-                        value={currentTarget instanceof User ? currentTarget.personalCode : currentTarget?.id}
+                        value={currentTarget instanceof User ? currentTarget.id : currentTarget?.id}
                     >
                         <Options users={users} teams={teams} />
                     </select>

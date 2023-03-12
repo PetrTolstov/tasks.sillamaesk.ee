@@ -15,7 +15,7 @@ function Main() {
 
     function setCurrentUserByCode(code: string) {
         const result = users.filter((obj) => {
-            return obj.personalCode === code;
+            return obj.id === code;
         });
 
         if (result && result[0]) {

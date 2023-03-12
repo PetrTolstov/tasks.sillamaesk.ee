@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import styles from "./changeuserinformation.module.css";
+import styles from "./AddUser.module.css";
 import Modal from "../Modal/Modal";
 import TextInput from "../TextInput/TextInput";
 import Button, { Size } from "../Button/Button";
@@ -10,6 +10,7 @@ import {
     collection,
     deleteDoc,
     doc,
+    setDoc,
     updateDoc,
 } from "firebase/firestore/lite";
 import { db } from "../../firebase/firebaseInit";
@@ -18,15 +19,12 @@ import Options from "../Options/Options";
 import getUsers from "../../firebase/services/getUsers";
 import getTeams from "../../firebase/services/getTeams";
 
-type ChangeUserInformationProps = {
+type AddUserProps = {
     isShowingModal: boolean;
     closeModal: () => void;
 };
 
-function ChangeUserInformation({
-    isShowingModal,
-    closeModal,
-}: ChangeUserInformationProps) {
+function AddUser({ isShowingModal, closeModal }: AddUserProps) {
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [users, setUsers] = useState<User[]>([]);
     const [isUsersLoading, setIsUsersLoading] = useState(true);
@@ -43,38 +41,12 @@ function ChangeUserInformation({
     const [userTeams, setUserTeams] = useState<string[]>([]);
 
     useEffect(() => {
-        getUsers("user")
-            .then((res) => { 
-                setCurrentUser(res.at(0) as User);
-                return res
-            })
-            .then((users) => {
-                getUsers("admin").then((res) => {
-                    setUsers((prevState) => {
-                        return [...users, ...res]
-                    });
-                    setIsUsersLoading(false);
-                });
-            });
-
         getTeams().then((res) => {
             setTeams(res);
             setCurrentTeam(res.at(0) as Team);
             setIsUsersLoading(false);
         });
     }, []);
-
-    useEffect(() => {
-        if (currentUser) {
-            setFirstName(currentUser.firstName);
-            setLastName(currentUser.lastName);
-            setPersonalCode(currentUser.personalCode);
-            setEmail(currentUser.email);
-            setNumber(currentUser.number);
-            setActive(currentUser.active);
-            setUserTeams(currentUser?.teams);
-        }
-    }, [currentUser]);
 
     function setCurrentUserByCode(code: string) {
         let result: User[];
@@ -88,51 +60,32 @@ function ChangeUserInformation({
     }
 
     function ChangeInfo() {
-        if (currentUser) {
-            const userRef = doc(db, "users", currentUser?.id);
-            updateDoc(userRef, {
-                firstName: firstName,
-                lastName: lastName,
-                active: active,
-                personalCode: personalCode,
-                number: number,
-                teams: userTeams,
+        const userRef = doc(collection(db, "users"));
+        setDoc(userRef, {
+            firstName: firstName,
+            lastName: lastName,
+            active: active,
+            personalCode: personalCode,
+            number: number,
+            email: email,
+            role: "user",
+            teams: userTeams,
+            tasks: [],
+        })
+            .then((res) => {
+                closeModal();
+                window.location.reload()
             })
-                .then((res) => {
-                    closeModal();
-                })
-                .catch((e) => {
-                    console.log(e);
-                });
-        }
+            .catch((e) => {
+                console.log(e);
+            });
     }
 
-    function deleteAccount() {
-        if (currentUser) {
-            deleteDoc(doc(db, "users", currentUser.id))
-                .then((res) => {
-                    closeModal();
-                    window.location.reload();
-                })
-                .catch((e) => {
-                    console.log(e);
-                });
-        }
-    }
+    
 
     return (
         <Modal isShowing={isShowingModal} closeModal={closeModal}>
             <div>
-                <select
-                    className={styles.select}
-                    name="list"
-                    onChange={(e) =>
-                        setCurrentUserByCode(e.currentTarget.value)
-                    }
-                    value={currentUser?.id}
-                >
-                    <Options users={users} teams={[]} />
-                </select>
                 <TextInput
                     placeholder={"Eesnimi"}
                     value={firstName}
@@ -147,6 +100,12 @@ function ChangeUserInformation({
                     placeholder={"Isikukood"}
                     value={personalCode}
                     onChange={(i) => setPersonalCode(i)}
+                />
+
+                <TextInput
+                    placeholder={"Email"}
+                    value={email}
+                    onChange={(i) => setEmail(i)}
                 />
 
                 <TextInput
@@ -213,12 +172,8 @@ function ChangeUserInformation({
             <Button action={() => ChangeInfo()} size={Size.Medium} filled>
                 Muuda teavet
             </Button>
-
-            <Button action={() => deleteAccount()} size={Size.Medium}>
-                Kustuta konto
-            </Button>
         </Modal>
     );
 }
 
-export default ChangeUserInformation;
+export default AddUser;

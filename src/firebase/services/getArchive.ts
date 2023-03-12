@@ -8,7 +8,7 @@ export default async function getArchive() {
     let list: ArchiveArgs[] = [];
 
     querySnapshot.forEach((doc) => {
-        let obj = doc.data() ;
+        let obj = doc.data();
         obj.startDate = obj.startDate.toDate().toLocaleDateString("en-GB", {
             day: "numeric",
             month: "numeric",

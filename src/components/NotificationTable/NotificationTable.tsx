@@ -61,7 +61,6 @@ function NotificationTable() {
                                             doc(db, "notifications", el.id)
                                         )
                                             .then((res) => {
-                                                console.log(res);
                                                 AddToArchive({
                                                     title: el.title,
                                                     description: el.description,

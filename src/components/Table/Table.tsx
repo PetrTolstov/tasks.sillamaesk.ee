@@ -39,6 +39,10 @@ function Table({ target, list, setCurrentTarget }: TableProps) {
         }
     }, [list, target]);
 
+
+  
+
+
     
     return (
         <article className={styles.table}>

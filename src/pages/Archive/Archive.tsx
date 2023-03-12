@@ -17,7 +17,6 @@ function Archive() {
                 UserStore.userData.user?.role === "manager"
             ) {
                 getArchive().then((res) => {
-                    console.log(res)
                     setArchive(res);
                     setIsLoading(false);
                 });

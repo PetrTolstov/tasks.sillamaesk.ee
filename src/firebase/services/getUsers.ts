@@ -9,7 +9,7 @@ export default async function getUsers(role: string) {
     let list: UserType[] = [];
     querySnapshot.forEach((doc) => {
         let obj = doc.data() as User;
-        obj.id = obj.email;
+        obj.id = doc.id;
 
         list.push(
             new User(

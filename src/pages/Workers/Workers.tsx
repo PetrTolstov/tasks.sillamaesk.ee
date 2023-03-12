@@ -5,11 +5,12 @@ import { useState } from 'react';
 import AddingTeam from "../../components/AddingTeam/AddingTeam";
 import { observer } from "mobx-react-lite";
 import ChangeUserInformation from '../../components/ChangeUserInformation/ChangeUserInformation';
+import AddUser from '../../components/AddUser/AddUser';
 
 function Workers() {
     const [showingTeam, setShowingTeam] = useState(false)
-    const [showingUserChange, setShowingUserChange] = useState(false)
-    console.log(UserStore.userData.user?.role === "manager")
+    const [showingAddUser, setShowingAddUser] = useState(false)
+    const [showingUserChange, setShowingUserChange] = useState(false) 
     return (
         <main className={styles.main}>
             {UserStore.userData.user?.role === "manager" ? (
@@ -19,6 +20,9 @@ function Workers() {
 
                                 <Button action={() => setShowingUserChange(true)}>Muutke kasutajateavet</Button>
                                 <ChangeUserInformation closeModal={() => setShowingUserChange(false)} isShowingModal={showingUserChange}/> 
+
+                                <Button action={() => setShowingAddUser(true)}>Lisa kasutaja</Button>
+                                <AddUser closeModal={() => setShowingAddUser(false)} isShowingModal={showingAddUser}/>
                             </>
                         ) : (
                             <a href="/">Mine tagasi</a>

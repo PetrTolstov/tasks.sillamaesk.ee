@@ -30,7 +30,7 @@ function TableItem({ id, target }: TableItemProps) {
 
                 if (!res) {
                     if (target instanceof User) {
-                        const userRef = doc(db, "users", target.email);
+                        const userRef = doc(db, "users", target.id);
                         let list = target?.tasks.filter((value) => {
                             return value !== id;
                         });
@@ -57,7 +57,6 @@ function TableItem({ id, target }: TableItemProps) {
         if (status === Status.Checked) {
             deleteDoc(doc(db, "tasks", id))
                 .then((res) => {
-                    console.log(res);
                     if(task){
                         AddToArchive({title : task.title, description: task.description, startDate: task.startDate,endDate: task.endDate})                 
                     }
@@ -121,7 +120,6 @@ function TableItem({ id, target }: TableItemProps) {
                                         onClick={() => {
                                             deleteDoc(doc(db, "tasks", id))
                                                 .then((res) => {
-                                                    console.log(id);
                                                     AddToArchive({
                                                         title: task.title,
                                                         description:

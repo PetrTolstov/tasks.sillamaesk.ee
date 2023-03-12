@@ -7,11 +7,12 @@ import UserStore from "../../stores/UserStore";
 export default function CheckIfUserSignIn() {
     onAuthStateChanged(auth, async (user) => {
         if (user) {
-            const ref = doc(db, "users", user.email as string);
+            const ref = doc(db, "users", user.uid as string);
+            console.log(user.uid)
             const docSnap = await getDoc(ref);
             if (docSnap.exists()) {
                 let userInfo = docSnap.data();
-                userInfo.id = user.email
+                userInfo.id = user.uid
                 UserStore.setUserData(userInfo as UserType)
             } else {
                 localStorage.setItem("isLoggedIn", '')
