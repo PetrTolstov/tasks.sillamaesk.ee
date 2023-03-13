@@ -6,6 +6,8 @@ import getTeams from "../../firebase/services/getTeams";
 import { TeamType } from "../../types/TeamType";
 import getArchive from "../../firebase/services/getArchive";
 import { ArchiveArgs } from "../../services/AddToArchive";
+import { deleteDoc, doc } from "firebase/firestore/lite";
+import { db } from "../../firebase/firebaseInit";
 
 function Archive() {
     const [archive, setArchive] = useState<ArchiveArgs[]>([]);
@@ -46,6 +48,25 @@ function Archive() {
                                         <span className={styles.date}>
                                             {el.startDate}-{el.endDate}
                                         </span>
+                                        
+                                        <button
+                                    className={styles.buttonDel}
+                                    onClick={() => {
+                                        if(el.id)
+                                        deleteDoc(
+                                            doc(db, "archive", el.id)
+                                        )
+                                            .then((res) => {
+                                                window.location.reload()
+                                            })
+                                            .catch((e) => {
+                                                console.log(e);
+                                            });
+                                    }}
+                                >
+                                    Kustuta töö
+                                </button>
+                                
                                     </>
                                 </article>
                             ))}

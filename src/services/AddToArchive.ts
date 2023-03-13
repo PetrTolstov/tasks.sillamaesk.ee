@@ -2,6 +2,7 @@ import { addDoc, collection, Timestamp } from "firebase/firestore/lite";
 import { db } from "../firebase/firebaseInit";
 
 export type ArchiveArgs = {
+    id?: string;
     description: string;
     title: string;
     endDate: string;
@@ -12,7 +13,7 @@ export default function AddToArchive({
     title,
     description,
     startDate,
-    endDate,
+    endDate
 }: ArchiveArgs) {
     let end = endDate.split('/')
     let start = startDate.split('/')

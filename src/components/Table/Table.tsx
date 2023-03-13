@@ -39,11 +39,6 @@ function Table({ target, list, setCurrentTarget }: TableProps) {
         }
     }, [list, target]);
 
-
-  
-
-
-    
     return (
         <article className={styles.table}>
             <div className={styles.headerOfTable}>
@@ -64,7 +59,8 @@ function Table({ target, list, setCurrentTarget }: TableProps) {
                         >
                             <Options users={users} teams={teams} />
                         </select>
-                        {UserStore.userData.user?.role === "manager" ? (
+                        {UserStore.userData.user?.role === "manager" ||
+                        UserStore.userData.user?.role === "admin" ? (
                             <>
                                 <Button action={() => setIsShowing(true)}>
                                     +
@@ -86,8 +82,9 @@ function Table({ target, list, setCurrentTarget }: TableProps) {
             </div>
 
             {target ? (
-                target.tasks
-                    .map((el) => <TableItem id={el} key={el} target={target} />)
+                target.tasks.map((el) => (
+                    <TableItem id={el} key={el} target={target} />
+                ))
             ) : (
                 <></>
             )}

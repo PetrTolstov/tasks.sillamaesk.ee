@@ -27,7 +27,8 @@ function NotificationTable() {
         <article className={styles.table}>
             <div className={styles.headerOfTable}>
                 <h2>Isiklikud ülesanded</h2>
-                {UserStore.userData.user?.role === "manager" ? (
+                {UserStore.userData.user?.role === "manager" ||
+                UserStore.userData.user?.role === "admin" ? (
                     <>
                         <Button action={() => setIsShowing(true)}>+</Button>
                         <AddingTask

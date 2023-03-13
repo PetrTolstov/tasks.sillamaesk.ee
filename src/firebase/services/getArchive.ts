@@ -9,6 +9,7 @@ export default async function getArchive() {
 
     querySnapshot.forEach((doc) => {
         let obj = doc.data();
+        obj.id = doc.id
         obj.startDate = obj.startDate.toDate().toLocaleDateString("en-GB", {
             day: "numeric",
             month: "numeric",
